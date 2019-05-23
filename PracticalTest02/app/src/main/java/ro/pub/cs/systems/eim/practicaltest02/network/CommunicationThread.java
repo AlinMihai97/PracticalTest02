@@ -21,6 +21,7 @@ import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.ResponseHandler;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.impl.client.BasicResponseHandler;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
@@ -68,14 +69,15 @@ public class CommunicationThread extends Thread {
             } else {
                 Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the webservice...");
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost(Constants.WEB_SERVICE_ADDRESS);
+                HttpGet httpPost = new HttpGet(Constants.WEB_SERVICE_ADDRESS + "?query=Bucharest");
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair(Constants.QUERY_ATTRIBUTE, city));
                 UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-                httpPost.setEntity(urlEncodedFormEntity);
+                // httpPost.setEntity(urlEncodedFormEntity);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String pageSourceCode = httpClient.execute(httpPost, responseHandler);
-                if (pageSourceCode == null) {
+                Log.d(Constants.TAG, pageSourceCode);
+                /*if (pageSourceCode == null) {
                     Log.e(Constants.TAG, "[COMMUNICATION THREAD] Error getting the information from the webservice!");
                     return;
                 }
@@ -100,9 +102,9 @@ public class CommunicationThread extends Thread {
                         serverThread.setData(city, weatherForecastInformation);
                         break;
                     }
-                }
+                }*/
             }
-            if (weatherForecastInformation == null) {
+            /*if (weatherForecastInformation == null) {
                 Log.e(Constants.TAG, "[COMMUNICATION THREAD] Weather Forecast Information is null!");
                 return;
             }
@@ -130,17 +132,17 @@ public class CommunicationThread extends Thread {
                     result = "[COMMUNICATION THREAD] Wrong information type (all / temperature / wind_speed / condition / humidity / pressure)!";
             }
             printWriter.println(result);
-            printWriter.flush();
+            printWriter.flush();*/
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + ioException.getMessage());
             if (Constants.DEBUG) {
                 ioException.printStackTrace();
             }
-        } catch (JSONException jsonException) {
-            Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + jsonException.getMessage());
-            if (Constants.DEBUG) {
-                jsonException.printStackTrace();
-            }
+//        } catch (JSONException jsonException) {
+//            Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + jsonException.getMessage());
+//            if (Constants.DEBUG) {
+//                jsonException.printStackTrace();
+//            }
         } finally {
             if (socket != null) {
                 try {
